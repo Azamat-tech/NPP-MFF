@@ -143,19 +143,47 @@ Maria is not the teacher.
 Kate is a patient of the violinist.
 Who plays the flute?
 */
-person(kate).
-person(maria).
-person(roman).
+person1(kate).
+person1(maria).
+person1(roman).
 
-different(X,Y,Z) :-
-    person(X), person(Y), person(Z),
+different1(X,Y,Z) :-
+    person1(X), person1(Y), person1(Z),
     dif(X,Y), dif(Y,Z), dif(X,Z).
 
 solve4(Piano, Flute, Violin, Doctor, Lawyer, Teacher) :-
-    different(Piano, Flute, Violin),
-    different(Doctor, Lawyer, Teacher),
+    different1(Piano, Flute, Violin),
+    different1(Doctor, Lawyer, Teacher),
     dif(maria, Doctor),
     Lawyer = Piano,
     dif(maria, Teacher),
     Violin = Doctor,
     dif(kate, Doctor).
+
+
+% Recodex - Restaurant Problem
+person2(david). person2(thomas).
+person2(emma). person2(stella).
+
+across(david, thomas).
+across(thomas, david).
+across(emma, stella).
+across(stella, emma).
+
+different2(A,B,C,D) :-
+    person2(A), person2(B), person2(C), person2(D),
+    dif(A,B), dif(A,C), dif(A,D), 
+    dif(B,C), dif(B,D), dif(C,D).
+
+solve(Dumplings, Pasta, Soup, Trout) :- 
+    different2(Dumplings, Pasta, Soup, Trout),
+    different2(Cider, Beer, Wine, IcedTea),
+    dif(Cider, Trout),
+    across(Cider, Trout),
+    Dumplings = Beer,
+    Soup = Cider,
+    dif(Pasta, Beer),
+    across(Pasta, Beer),
+    dif(david, IcedTea),
+    emma = Wine,
+    dif(stella, Dumplings).
