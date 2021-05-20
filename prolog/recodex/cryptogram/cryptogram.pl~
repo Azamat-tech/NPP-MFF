@@ -1,0 +1,14 @@
+decrypt_word_helper([],_,_,[]).
+decrypt_word_helper([X|L],K1,K2,[Y|D]) :- P #= X - 97, Q #= Y - 97,
+                                          P #= (Q + K1) mod 27,
+                                          decrypt_word_helper(L,K2,K1,D).
+
+decrypt_word(E, K1, K2, D) :- string_codes(E, L),
+                              decrypt_word_helper(L, K1, K2, M),
+                              string_codes(M, D).
+
+decrypt_h([],_,_,_,[]).
+decrypt_h([X|L],K1,K2,D,[D1|M]) :- decrypt_word(X,K1,K2,D1), member(D1, D),                                                       decrypt_h(L,K1,K2,D,M).
+
+decrypt(C, D, M) :- split_string(C," ", " ",W),  between(0,25,K1),
+                    between(0,25,K2), decrypt_h(W,K1,K2,D,M1), atomics_to_string(M1, " ", M).

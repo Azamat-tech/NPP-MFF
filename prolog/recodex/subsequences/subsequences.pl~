@@ -1,0 +1,3 @@
+sublist(_,[]).
+sublist([_|L],[X|M]) :- sublist(L, [X|M]).
+sublist([X|L],[X|M]) :- sublist(L, M).

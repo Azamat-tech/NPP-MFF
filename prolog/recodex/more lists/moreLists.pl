@@ -1,0 +1,9 @@
+zip([],[]:[]).
+zip([X : Y | L],[X | N]:[Y | M]) :- zip(L, N : M).
+
+multidup(L, N, M) :- multidup(L, N, M, N).
+multidup([], _, [], _).
+multidup([_ | L], N, M, 0) :- multidup(L, N, M, N).
+multidup([X | L], N, [X | M], K) :- K #\= 0, K1 #= K - 1, multidup([X | L], N, M, K1).
+
+rotate(L,M) :- same_length(L,M), append(X,Y,L),append(Y, X, M).

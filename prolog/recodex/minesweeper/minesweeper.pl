@@ -1,0 +1,12 @@
+%sums(L,M) that is true if M is two elements longer than L
+%and each element of L is the sum of the three numbers below it
+sums([],[_,_]).
+sums([X|L], [A,B,C|M]) :- same_length([_,_,X|L],[A,B,C|M]),
+                          X #= A+B+C, sums(L,[B,C|M]).
+convert([],[]).
+convert([X|BoardIn], [Y|BoardOut]) :- ((X #= 1, Y = x);(X #= 0, Y = o)),
+                                        convert(BoardIn, BoardOut).
+
+mines(Nums, Board) :- same_length(Nums, Board), same_length(BoardExt, Board),
+                      BoardExt ins 0..1, append([0|BoardExt], [0], BoardExten),
+                      sums(Nums, BoardExten), convert(BoardExt, Board).
