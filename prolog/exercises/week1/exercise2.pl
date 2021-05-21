@@ -93,3 +93,29 @@ is_list([_ | L]) :- is_list(L).
 % Use iterative deepening to perform a series of depth-first searches for paths
 % of every possible length.
 path2(G, X, Y, L) :- is_list(L), path1(G, X, Y, L).
+
+% RECODEX Assignment - List a)
+% number(one). number(two).
+% number(three). number(four).
+% number(five).
+
+equals(1, one).
+equals(2, two).
+equals(3, three).
+equals(4, four).
+equals(5, five).
+
+numerals([],[]).
+numerals([X|L],[S|M]) :- equals(X,S), numerals(L,M).
+
+% b) Write a predicate all_diff(L) that is true if no two elements of L are equal.
+comparison(_,[]).
+comparison(X, [Y|L]) :- dif(X,Y), comparison(X,L).
+
+all_diff([]).
+all_diff([X|L]) :- comparison(X, L), all_diff(L).
+
+% c)Write a predicate flatten(L, M) that is true if L is a list of 
+% lists and M is the concatenation of all those lists.
+flatten([],[]).
+flatten([X|L],Z) :- append(X, Y, Z), flatten(L, Y).
