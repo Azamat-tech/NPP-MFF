@@ -119,3 +119,21 @@ all_diff([X|L]) :- comparison(X, L), all_diff(L).
 % lists and M is the concatenation of all those lists.
 flatten([],[]).
 flatten([X|L],Z) :- append(X, Y, Z), flatten(L, Y).
+
+% RECODEX - Duplicates
+% a) Write a predicate dup(L, M) that is true if M is obtained by repeating each element in L.
+dup1([],[]).
+dup1([X|L],R) :- append([X,X], Y, R), dup1(L, Y).
+dup2([X|L], [X,X|M]) :- dup2(L,M).
+
+% b) Write a predicate dedup(L, M) that is true if M is obtained by removing adjacent duplicate elements in L. 
+dedup([],[]).
+dedup([X,X|L], M) :- dedup([X|L],M).
+dedup([X,Y|L], [X|M]) :- dedup([Y|L],M).
+
+
+% c)  Write a predicate group(L, M) that is true if M is obtained by combining adjacent duplicate elements from L into sublists. 
+group([],[]).
+group([X],[[X]]).
+group([X,X|L],[[X|N]|M]) :- group([X|L],[N|M]).
+group([X,Y|L],[[X]|M]) :- dif(X,Y), group([Y|L], M).
