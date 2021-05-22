@@ -33,10 +33,8 @@ all_same([_]).
 all_same([X, X|L]) :- all_same([X|L]).
 
 % Write a predicate reverse(L, M) that is true if L and M contain the same elements in reverse order.
-helper1([],H,H).
-helper([X|L],H,_) :- helper1(L,[X|H],_).
-
-reverse1(L,M) :- helper1(L,[],M).
+reverse1([],[]).
+reverse1([X|L],M) :- reverse(L,R), append(R,[X],M).
 
 % Write a predicate rotate(L, M) that is true if M is L rotated one element to the right (or, equivalently, L is M rotated one element to the left).
 rotate([X|L],M) :- append(L, [X], M).
