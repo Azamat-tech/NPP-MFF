@@ -82,7 +82,7 @@ of L, where elements are indexed starting from 1. For example, slice([r, i, v, e
 
 slice([X|_],1,2,[X]).
 slice([],_,_,[]).
-slice([X|L],1,T,[X|M]) :- T > 1, T1 #= T - 1, slice(L,1,T1,M).
+slice([X|L],1,T,[X|M]) :- T #> 1, T1 #= T - 1, slice(L,1,T1,M).
 slice([_|L],F,T,M) :- F > 1, F1 #= F-1, slice(L,F1,T,M).
 
 /*
@@ -90,11 +90,13 @@ slice([_|L],F,T,M) :- F > 1, F1 #= F-1, slice(L,F1,T,M).
 Write a predicate total_days(Y, Z, N) that is true if N is the total number of 
 days in the years Y .. Z. Assume that 1900 < Y, Z < 2100 (which makes leap year calculations easier).
 */
-is_leap(Y) :- Y mod 4 #= 0, (Y mod 100 #\= 0; Y mod 400 #= 0).
-not_leap_year(Y) :- Y mod 4 #\= 0; Y mod 100 #= 0, Y mod 400 #\= 0.
+% N is 1 if Year is a leap year, otherwise 0.
+leap(Year, N) :- N #<==> Year mod 400 #= 0 #\/ Year mod 4 #= 0 #/\ Year mod 100 #\= 0.
+
 calculate(Y,Y,0).
-calculate(Y,Z,N) :- is_leap(Y), dif(Y,Z), Y1 #= Y + 1, N #= 366 + N1, N1 #>= 0, calculate(Y1,Z,N1).
-calculate(Y,Z,N) :- not_leap_year(Y), dif(Y,Z), Y1 #= Y + 1, N #= 365 + N1, N1 #>= 0, calculate(Y1,Z,N1).
+calculate(Y,Z,N) :- dif(Y,Z), Y1 #= Y + 1,
+    ((is_leap(Y, T), T #= 1, N #= 366 + N1, N1 #>= 0, calculate(Y1,Z,N1));
+    ( is_leap(Y, T), T #= 0, N #= 365 + N1, N1 #>= 0, calculate(Y1,Z,N1))).
 
 total_days(Y,Z,N) :- 1900 < Y, Z < 2100, calculate(Y,Z,N).
 
@@ -106,3 +108,56 @@ Write a predicate gcd(I, J, K) that is true if the greatest common divisor of I 
 */
 gcd(I,0,I).
 gcd(I,J,K) :- J1 #= I mod J, gcd(J,J1,K).
+
+/*
+14. Prime
+Write a predicate is_prime(N) that is true if N is prime.
+*/
+has_factor(N,K) :- N mod K #= 0.
+has_factor(N,K) :- K * K #< N, K1 #= K + 2, has_factor(N,K1).
+
+is_prime(2).
+is_prime(3).
+is_prime(N) :-N #> 3, N mod 2 #\= 0, \+ has_factor(N, 3).
+
+/*
+15. All Primes
+Write a predicate all_primes(I, J) that returns a list of all prime numbers between I and J, inclusive.
+*/
+next(A,A1) :- A1 #= A + 1.
+
+all_primes(I,J,[]) :- I #> J, !.
+all_primes(I,J,[I|L]) :- is_prime(I), !, next(I,K), all_primes(K,J,L).
+all_primes(I,J,L) :- next(I,K), all_primes(K,J,L).
+
+/*
+16. Smallest Prime Factor
+Write a predicate smallest_factor(N, P) that is true if P is the smallest prime factor of N.
+*/
+smallest_factor(N,P) :- N #> 0, list_prime(N,K,2), nth0(0,K,P).
+
+list_prime(1,[],_) :- !.
+list_prime(N,[K|L],K) :- R #= N // K, N #= K * R, !, list_prime(R,L,K).
+list_prime(N,L,K) :- next(N,K,NK), list_prime(N,L,NK).
+
+next(N,F,NF) :- F * F #< N, !, NF #= F + 1.
+next(N,_,N).
+
+/*
+17. Drop Every Nth
+Write a predicate drop(L, N, M) that is true if we can remove every Nth element from L to make M. 
+For example, drop([a, b, c, d, e, f, g], 3, [a, b, d, e, g]) is true.
+*/
+drop(L,N,M) :- drop(L,N,M,N).
+drop([],_,[],_).
+drop([X|L],K,[X|M],N) :- K #\= 1, K1 #= K - 1, drop(L,K1,M,N).
+drop([_|L],1,M,N) :- drop(L,N,M,N).
+
+/*
+18. Number of Prime Factors
+Write a predicate num_factors(A, N) that is true if A has exactly N prime factors, where repeated
+factors are counted separately. For example, num_factors(12, 3) is true since 12 = 2 x 2 x 3.
+*/
+num_factors(A,N) :- list_prime(A,L,2), length(L,N).
+
+
