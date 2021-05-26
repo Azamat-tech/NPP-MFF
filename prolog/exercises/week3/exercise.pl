@@ -160,4 +160,28 @@ factors are counted separately. For example, num_factors(12, 3) is true since 12
 */
 num_factors(A,N) :- list_prime(A,L,2), length(L,N).
 
+% RECODEX HOMEWORKS
+% More Lists
+/*
+Write a predicate zip(?L, ?M) that is true if L is a list of pairs and M is a corresponding pair of 
+lists, where we represent pairs using the structure X : Y.
+*/
+zip([],[]:[]).
+zip([X:Y|L],[X|M]:[Y|Z]) :- zip(L,M:Z).
 
+/*
+b) Write a predicate multidup(?L, +N, ?M) that is true if M can be formed by duplicating each element
+in L N times. Your predicate should terminate in both directions if the solution set is finite.
+*/
+
+duplicate(_,0,[]).
+duplicate(X,N,NL) :- N #> 0, N1 #= N - 1, append([X],R,NL), duplicate(X,N1,R).
+
+multidup([],_,[]).
+multidup([X|L],N,M) :- duplicate(X,N,NL), append(NL,R,M), multidup(L,N,R).
+
+/*
+c) Write a Prolog predicate rotate(?L, ?M) that is true if L can be rotated by any number of positions
+(including zero) to form M.
+*/
+rotate(L,M) :- same_length(L,M), append(X,Y,L), append(Y,X,M).
