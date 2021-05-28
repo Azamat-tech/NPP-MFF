@@ -58,3 +58,15 @@ mergesort([X],[X]).
 mergesort(L, S) :- length(L,N), N #> 1, divide(L, L1,L2), mergesort(L1,L1R), mergesort(L2,L2R),
                    merge(L1R,L2R,S).
 
+/*
+5. Quicksort
+Write a predicate that sorts a list of integers. Use a quicksort.
+*/
+quicksort([],[]).
+quicksort([X|L],M) :- 
+        pivoting(X,L,L1,L2), quicksort(L1,L1R), 
+        quicksort(L2,L2R), append(L1R,[X|L2R],M).
+   
+pivoting(_,[],[],[]).
+pivoting(H,[X|T],[X|L],G) :- X #=< H, pivoting(H,T,L,G).
+pivoting(H,[X|T],L,[X|G]) :- X #> H, pivoting(H,T,L,G).
