@@ -111,3 +111,73 @@ angle_between(V,W,A) :-
             M is M1 * M2, R is D / M, A is acos(R).
 
 
+/*
+8. Matrices
+We can represent a matrix as a list of lists of floating-point numbers.
+
+Write a predicate that tests whether a matrix has dimensions N x N, for a given N.
+Also write predicates that can calculate the following:
+
+All predicates should work in any direction.
+*/
+% 1) the zero matrix of a given size
+lengthing(N,L) :- length(L,N).
+
+maplist(_, []).
+maplist(C,[X|Xs]) :-
+   call(C,X),
+   maplist(C, Xs).
+
+zerosL(L) :- maplist(=(0),L).
+
+maplist_(_,[]).
+maplist_(P,[X|Xs]) :-
+        call(P,X),
+        maplist_(P,Xs).
+
+zero_matrix(N, M) :- length(M,N), maplist(lengthing(N), M), maplist_(zerosL, M).
+
+addLists(E1,E2,E3) :- { E1 + E2 = E3 }.
+addMatrices(L1,L2,L3) :- maplist(addLists,L1,L2,L3).
+sum_matrices(M1,M2,M3) :- 
+                get_dimension(M1,N1), get_dimension(M2,N2),
+                N1 #= N2, maplist(addMatrices,M1,M2,M3).
+
+% 3) the first column of a matrix (a vector)
+get_first_column(M,V) :- maplist(nth0(1),M,V).
+
+% 4) the identity matrix of a given size
+zeros(0,[]).
+zeros(N,[0|L]) :- succ(N1,N), zeros(N1,L).
+
+replaceH(_,[],[],_).
+replaceH(I,[_|L],[1|R],J) :- I #= J, J1 #= J + 1, replaceH(I,L,R,J1).
+replaceH(I,[X|L],[X|R],J) :- I #\= J, J1 #= J + 1, replaceH(I,L,R,J1).
+
+replace(I, L, R) :- replaceH(I,L,R,1).
+
+id_list(P,S,L) :- length(L1,S), maplist(=(0),L1), replace(P,L1,L).
+
+restrict_size(_,[]).
+restrict_size(N,[X|M]) :- length(X,N), restrict_size(N,M).
+
+identityH(X,X,L1) :- id_list(X,X,L1).
+identityH(N,I,M) :- 
+                N #\= I, id_list(I,N,L), I1 #= I + 1,
+                identityH(N,I1,M1), append(L,M1,M).
+
+identity(N,M) :- length(M,N), identityH(N,1,R), append(M,R), restrict_size(N,M).
+
+% 5) the transpose of a matrix
+transpose1([], []).
+transpose1([[H|T] |Tail], [[H|NT] |NTail]) :- 
+	firstCol(Tail, NT, Rest), transpose1(Rest, NRest), firstCol(NTail, T, NRest).
+
+firstCol([[H|T] |Tail], [H|Col], [T|Rows]) :- firstCol(Tail, Col, Rows).
+firstCol([], [], []).
+
+% 6) the product of two matrices
+row_multiplication(T,M1,M3) :- maplist(dot_product(M1),T,M3).
+
+multiplyM(M1,M2,M3) :- transpose1(M2,T), maplist(row_multiplication(T),M1,M3).
+
