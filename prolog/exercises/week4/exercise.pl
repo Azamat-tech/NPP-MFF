@@ -70,3 +70,44 @@ quicksort([X|L],M) :-
 pivoting(_,[],[],[]).
 pivoting(H,[X|T],[X|L],G) :- X #=< H, pivoting(H,T,L,G).
 pivoting(H,[X|T],L,[X|G]) :- X #> H, pivoting(H,T,L,G).
+
+/*
+6. Digits
+Write a predicate digits(L, N) that converts a list of digits (e.g. [3, 4, 5])
+to an integer (e.g. 345).
+*/
+conc(X,A,NX) :- NX #= X + A * 10.
+digits(L,M) :- foldl(conc, L, 0, M).
+
+/*
+7. Vectors
+We can represent a vector as a list of floating-point numbers. Write predicates that can calculate the following:
+
+the sum of two vectors
+
+multiplying a scalar by a vector
+
+the dot product of two vectors
+
+the angle between two vectors
+
+All predicates should work in any direction.
+*/
+add(X,Y,Z) :- {X + Y = Z}.
+sum_v(V,W,Z) :- maplist(add,V,W,Z).
+
+multiply(X,Y,Z) :- {X * Y = Z}.
+mult_scalar(X,L,Z) :- maplist(multiply(X),L,Z).
+
+add_d(X,A,R) :- {X + A = R}.
+dot_product(V,W,Z) :- maplist(multiply,V,W,T), foldl(add_d,T,0,Z).
+
+addS(X,A,S) :- X1 is X^2, S is X1 + A. 
+
+magnitude(V,R) :- foldl(addS,V,0,S), R is sqrt(S).
+
+angle_between(V,W,A) :- 
+            dot_product(V,W,D), magnitude(V,M1),magnitude(W,M2),
+            M is M1 * M2, R is D / M, A is acos(R).
+
+
