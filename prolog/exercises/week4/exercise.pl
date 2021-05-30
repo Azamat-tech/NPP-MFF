@@ -180,4 +180,3 @@ firstCol([], [], []).
 row_multiplication(T,M1,M3) :- maplist(dot_product(M1),T,M3).
 
 multiplyM(M1,M2,M3) :- transpose1(M2,T), maplist(row_multiplication(T),M1,M3).
-
