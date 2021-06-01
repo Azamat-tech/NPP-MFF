@@ -178,7 +178,3 @@ values in the leaves of the binary tree T. Recall that a leaf is a
 node with no chlidren. Ideally your predicate will run in time O(|S|). 
 Your predicate should work in both directions.
 */
-leaves(t(nil,V,nil),[V]).
-leaves(t(nil,V,R), M) :- leaves(R,M).
-leaves(t(L,V,nil), M) :- leaves(L,M). 
-leaves(t(L,_,R),M) :- M #= [S|M], leaves(L,S), M #= [C|M], leaves(R,C). 
