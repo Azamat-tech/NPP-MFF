@@ -1,4 +1,5 @@
 import Data.Maybe
+import Data.Char
 {-
 1. Mapping and Filtering
 
@@ -90,7 +91,7 @@ isSearchTree tree =
 -- same for the right subtrees
 
 {-
-6. Tree Fold
+6. Tree Fold 
 Write a function treeFoldr that performs a right fold of a function over the 
 values in a binary tree:
 
@@ -108,7 +109,7 @@ treeFoldr f a (Node left x right) = treeFoldr f firstBase left
           secondBase = (treeFoldr f a right)
 
 {-
-7. Algebraic Expressions
+7. Algebraic Expressions - CLASS WORK
 a) Design a data type Exp that can represent any arithmetic expression 
 involving integer constants, named variables, and the +, - and * operators. 
 Such expressions include
@@ -122,7 +123,7 @@ expression given an environment, which is an association list that holds
 the variables of the variables in the expression.
 -}
 data Op = Minus | Plus | Times
-data Expr = Const Int | Var String | OpExpr Expr Op Expr
+data Expr = Const Int | Var String | OpExpr Expr Op Expr 
 
 opfun :: Op -> (Int -> Int -> Int)
 opfun Minus = (-)
@@ -139,7 +140,7 @@ eval expr lVars = case expr of
         in opfun op l r
 
 {-
-8. Infix Expressions
+8. Infix Expressions - CLASS WORK
 Write a function parse :: String -> Exp that can parse an expression written 
 in prefix notation, such as
 
@@ -149,4 +150,31 @@ in prefix notation, such as
 + 0 + 1 + 2 3
 You may assume that (as in the examples above) all input tokens are separated 
 by spaces.
+-}
+isOperator :: String -> Bool
+isOperator l = elem l ["+","-","*"]
+
+convert :: String -> Op
+convert "+" = Plus
+convert "-" = Minus
+convert "*" = Times
+
+parse :: String -> Expr 
+parse s = 
+    let f :: [String] -> (Expr, [String])
+        f (token : rest) 
+            | isDigit (head token) = (Const (read token), rest)
+            | isLetter (head token) = (Var token, rest)
+            | isOperator token = 
+                let (left, rest1) = f rest
+                    (right, rest2) = f rest1
+                in (OpExpr left (convert token) right, rest2)
+        (expr, rest) = f (words s)
+    in expr 
+
+{-
+9. Simplifying Expressions
+Write a function simplify :: Exp -> Exp that simplifies an expression by combining constants wherever possible, and by eliminating additions/subtractions with 0 or multiplications with 1.
+
+For example, 0 + (x + (2 + 3)) should simplify to x + 5.
 -}
