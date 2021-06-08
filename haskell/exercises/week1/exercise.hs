@@ -1,3 +1,5 @@
+import Data.Char
+
 {-
 1. Last Element
 Write a function last that returns the last element of a list.
@@ -107,3 +109,58 @@ Write a function that breaks a string into a list of words.
 -}
 word_list :: String -> [String]
 word_list = words
+
+{-
+Homework Section
+-}
+-- 1) LIST STRINGS 
+insert :: Int -> [Int] -> [Int]
+insert x [] = [x]
+insert x (y : ys) 
+    | x < y = x : y : ys
+    | x > y = y : insert x ys
+    | otherwise = y : ys
+
+insertion_sort :: [Int] -> [Int]
+insertion_sort [x] = [x]
+insertion_sort (x : xs) = insert x (insertion_sort xs)
+
+capitalHelp :: [String] -> String
+capitalHelp [] = ""
+capitalHelp (x:xs)
+    | length (x:xs) == 1 = (toUpper (head x) : (drop 1 x))
+    | isUpper (head x) = x ++ " " ++ capitalHelp xs
+    | otherwise = (toUpper (head x) : (drop 1 x)) ++ " " ++ capitalHelp xs
+
+capitalize :: String -> String
+capitalize text = 
+    let splitText = words text 
+    in capitalHelp splitText 
+
+prime :: Integer -> Bool
+prime number 
+    | number < 2 = False
+    | number == 2 || number == 3 = True 
+    | number `mod` 2 == 0 || number `mod` 3 == 0 = False
+    | tester 5 number == False = False
+    | otherwise = True 
+
+allPrimes :: [Integer] 
+allPrimes = prime_cycle 2
+
+getPrimeUntilUpperBound :: Integer -> [Integer] 
+getPrimeUntilUpperBound 1 = []
+getPrimeUntilUpperBound x 
+    | prime x = x : getPrimeUntilUpperBound (x-1)
+    | otherwise = getPrimeUntilUpperBound (x-1)
+
+twinHelper :: [Integer] -> Integer
+twinHelper [x] = 0
+twinHelper (x:y:xs) = if abs(x - y) == 2 then 1 + twinHelper (y : xs)
+                                            else twinHelper (y : xs)
+
+twinPrimes :: Integer -> Integer
+twinPrimes upperBound = 
+    let list = getPrimeUntilUpperBound upperBound
+    in if length list == 0 || length list == 1 then 0
+        else twinHelper list
