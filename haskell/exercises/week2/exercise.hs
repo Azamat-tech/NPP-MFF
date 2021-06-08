@@ -1,3 +1,5 @@
+import Data.List
+import Data.Char 
 {-
 2. Mergesort
 
@@ -88,3 +90,53 @@ my_floor x = head [l | l <- [1..], fromIntegral l > x] - 1  -- Runs in O(n)
 get_upper_bound :: (Integral a1, Num a2, Ord a2) => a2 -> a1
 get_upper_bound x = head [p | l <- [1..], let p = 2 ^ l, fromIntegral p > x]
 
+{-
+Homework Questions
+-}
+-- 1) Poker Hand
+rank :: [Int] -> ([Int],[Int])
+rank hand = 
+    let groups = [(length l, head l) | l <- group (sort hand)]
+    in unzip (reverse(sort groups)) 
+
+better :: [Int] -> [Int] -> Bool
+better hand1 hand2 = rank hand1 > rank hand2 
+
+-- 2) Word Search
+lowerS :: String -> String
+lowerS s = [toLower c | c <- s]
+
+count :: String -> String -> Int
+count word s = length [() | t <- tails s, word `isPrefixOf` t]
+
+search :: [String] -> [String] -> [Int]
+search grid words = 
+    let lowerGrid = [lowerS s | s <- grid]
+        transpose_grid = transpose lowerGrid
+        count_of :: String -> Int
+        count_of word = 
+            sum [ count w line | g <- [lowerGrid, transpose_grid], 
+                  line <- g, w <- [word, reverse word] ]
+    in [count_of (lowerS word) | word <- words]
+
+test = search
+        ["ARTTEEB",
+         "DSOPNLT",
+         "TURNIPA",
+         "XKROFET",
+         "SKALEOT",
+         "MRCTEEB"]
+        ["beet", "carrot", "kale", "turnip", "potato"]
+
+test2 = search
+        ["ABCBA",
+         "BCABC",
+         "CABCA",
+         "BCABC",
+         "ABABA"]
+        ["abc", "bca"]
+
+test3 = let line = cycle "dandelion"
+            grid = take 400 [take 400 s | s <- tails line]
+        in search grid ["Dand", "LION", "iled", "noile", "dandy"]
+        
