@@ -89,3 +89,93 @@ altMap1 _ _ [] = []
 altMap1 f _ [x] = [f x]
 altMap1 f g (x : y : xs) = f x : g y : altMap1 f g xs 
 
+{-
+Homeworks - (Professor's Solution) 
+It uses the concepts covered in the class. Thus, it was used to revise those
+concepts
+-}
+-- Ranked-choice voting 
+get_candidates :: [[String]] -> [String]
+get_candidates ballots = nub(concat ballots)
+
+elect :: [[String]] -> [String]
+elect ballots = 
+    let candidates = get_candidates ballots
+    in if length candidates == 1 then candidates 
+       else let votes_for  :: String -> Int 
+                votes_for candidate = length [() | (d : _) <- ballots, d == candidate]
+                (_, loser) = minimum [(votes_for c, c) | c <- candidates]
+            in loser : elect [delete loser b | b <- ballots]
+
+test = elect [
+  [ "red", "green" ],
+  [ "blue" ],
+  [ "green", "yellow", "red", "blue" ],
+  [ "blue", "green", "yellow", "red" ],
+  [ "green" ]
+  ]
+
+test2 = elect [
+  [ "karel", "lucie" ],
+  [ "karel", "petra", "ondrej" ],
+  [ "petra" ],
+  [ "petra" ],
+  [ "karel", "david", "petra" ],
+  [ "petra" ],
+  [ "lucie", "karel", "ondrej" ],
+  [ "david", "karel" ],
+  [ "david", "petra", "ondrej" ],
+  [ "david", "lucie" ],
+  [ "karel" ],
+  [ "lucie" ],
+  [ "petra", "ondrej", "lucie" ]
+  ]
+
+test3 = elect [
+  [ "purple" ],
+  [ "orange", "red", "purple" ],
+  [ "blue", "orange" ],
+  [ "purple", "orange" ],
+  [ "red", "purple", "orange" ],
+  [ "red", "blue" ],
+  [ "red" ],
+  [ "orange" ],
+  [ "purple", "red", "blue" ],
+  [ "red", "orange", "purple", "blue" ],
+  [ "orange", "red", "purple" ],
+  [ "red", "blue" ],
+  [ "red", "purple" ],
+  [ "blue" ],
+  [ "purple" ],
+  [ "orange", "red" ],
+  [ "orange", "purple", "blue", "red" ],
+  [ "red" ],
+  [ "blue", "orange" ],
+  [ "red" ],
+  [ "purple", "blue" ],
+  [ "purple", "blue" ],
+  [ "blue", "red", "orange" ],
+  [ "red", "purple", "blue" ]
+  ]
+
+-- Relations 
+is_reflexive :: (a -> a -> Bool) -> [a] -> Bool
+is_reflexive f list = and [ f x x | x <- list ]
+
+is_symmetric :: (a -> a -> Bool) -> [a] -> Bool
+is_symmetric f list = and [f x y == f y x | x <- list, y <- list ]
+
+is_transitive :: (a -> a -> Bool) -> [a] -> Bool
+is_transitive f list = and [f x z | x <- list, y <- list, z <- list, f x y, f y z]
+
+is_equiv :: (a -> a -> Bool) -> [a] -> Bool
+is_equiv f list = is_reflexive f list && is_symmetric f list && is_transitive f list 
+
+classes :: (a -> a -> Bool) -> [a] -> [[a]]
+classes _ [] = []
+classes f (x : xs) = 
+    let (left ,right) = partition (f x) (x : xs)
+    in left : (classes f right)
+
+reflexive_closure :: Eq a => (a -> a -> Bool) -> (a -> a -> Bool)
+reflexive_closure f x y = (x == y) || f x y

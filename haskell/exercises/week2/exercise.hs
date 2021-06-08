@@ -91,7 +91,9 @@ get_upper_bound :: (Integral a1, Num a2, Ord a2) => a2 -> a1
 get_upper_bound x = head [p | l <- [1..], let p = 2 ^ l, fromIntegral p > x]
 
 {-
-Homework Questions
+Homeworks - (Professor's Solution) 
+It uses the concepts covered in the class. Thus, it was used to revise those
+concepts
 -}
 -- 1) Poker Hand
 rank :: [Int] -> ([Int],[Int])
