@@ -181,8 +181,20 @@ multiplications with 1.
 
 For example, 0 + (x + (2 + 3)) should simplify to x + 5.
 -}
--- simplify :: Expr -> Expr 
--- simplify OpExpr ((Const a) Plus (Const b)) = Const (a + b)
+-- Professor`s Solution
+simplify :: Expr -> Expr
+simplify (OpExpr left op right) =
+    case (simplify left, op, simplify right) of
+        (Const c, _, Const d) -> Const (opfun op c d)
+        (Const 0, Plus, e) -> e
+        (e, Plus, Const 0) -> e
+        (e, Minus, Const 0) -> e
+        (Const 0, Times, _) -> Const 0
+        (_, Times, Const 0) -> Const 0
+        (Const 1, Times, e) -> e
+        (e, Times, Const 1) -> e
+        (e, op, f) -> OpExpr e op f
+simplify e = e
 
 
 {-
