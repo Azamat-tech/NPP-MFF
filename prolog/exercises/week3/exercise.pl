@@ -91,7 +91,7 @@ Write a predicate total_days(Y, Z, N) that is true if N is the total number of
 days in the years Y .. Z. Assume that 1900 < Y, Z < 2100 (which makes leap year calculations easier).
 */
 % N is 1 if Year is a leap year, otherwise 0.
-leap(Year, N) :- N #<==> Year mod 400 #= 0 #\/ Year mod 4 #= 0 #/\ Year mod 100 #\= 0.
+is_leap(Year, N) :- N #<==> Year mod 400 #= 0 #\/ Year mod 4 #= 0 #/\ Year mod 100 #\= 0.
 
 calculate(Y,Y,0).
 calculate(Y,Z,N) :- dif(Y,Z), Y1 #= Y + 1,

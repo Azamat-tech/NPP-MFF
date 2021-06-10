@@ -52,15 +52,6 @@ should merge the contents of the files and write them to the output file,
 again with one integer per line. The files may be larger than available memory.
 -}
 
--- merge :: String -> String -> String -> IO ()
--- merge input1 input2 output = do 
---     content1 <- readFile input1
---     content2 <- readFile input2
---     let c1 = filter (/= '\n') content1
---         c2 = filter (/= '\n') content2
---         s = sort ( c1 ++ c2 )
---     writeFile output s
-
 parseToInt :: String -> [Int]
 parseToInt = map read . words
 
@@ -68,10 +59,20 @@ merge :: String -> String -> String -> IO()
 merge input1 input2 outputFile = do
                 content1 <- readFile input1
                 content2 <- readFile input2
-                let content1ListInt = parseToInt content1
-                let content2ListInt = parseToInt content2
-                let merged = sort $ content1ListInt ++ content2ListInt
-                writeFile outputFile . intercalate "\n" . map show $ merged
+                let fun (x:content1) (y:content2) = do 
+                    case compare x y of
+                        LT -> do 
+                            writeFile outputFile x
+                            writeFile outputFile y
+                            fun content1 content2 
+                        GT -> do 
+                            writeFile outputFile y
+                            writeFile outputFile x
+                            fun content1 content2 
+                        EQ -> do 
+                            writeFile outputFile x
+                            writeFile outputFile x
+                            fun content1 content2
                 return ()
 
 {-
