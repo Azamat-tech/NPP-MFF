@@ -81,11 +81,13 @@ instance (Eq a, Num a) => Eq (GFrac a) where
 instance (Show a) => Show (GFrac a) where
     show (GFrac a b) = show a ++ "/" ++ show b
 
--- convert :: String -> GFrac a 
--- convert (x:y:z:xs) = GFrac x z 
+convert :: Read a => String -> GFrac a 
+convert s = 
+    let (s1, _ : s2) = break (== '/') s 
+    in GFrac (read s1) (read s2)
 
--- instance (Read a) => Read (GFrac a) where 
---     read s = convert s
+instance Read a => Read (GFrac a) where 
+    readsPrec _ s = [(convert s, "")]
 
 {-
 6. Time
