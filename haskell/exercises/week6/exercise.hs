@@ -1,6 +1,6 @@
 import Data.Maybe
 import Data.Char 
-import Data.List
+import Data.List hiding (permutations)
 {-
 2. International Colors
 Here are some association lists with colors in a few languages:
@@ -80,9 +80,6 @@ merge input1 input2 outputFile = do
 Write a function permutations :: [a] -> [a] that returns a list of all permutations
 of a given list. Do not assume that the type a implements Eq.
 -}
--- permutations :: [a] -> [[a]]
--- permutations [] = []
--- permutations (x : xs) = permutations xs 
 
 
 -- Questions got harder to solve so I will leave it like this 
