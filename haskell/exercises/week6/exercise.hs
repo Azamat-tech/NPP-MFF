@@ -80,6 +80,9 @@ merge input1 input2 outputFile = do
 Write a function permutations :: [a] -> [a] that returns a list of all permutations
 of a given list. Do not assume that the type a implements Eq.
 -}
-
+-- Permutations
+permutations1 :: Eq a => [a] -> [[a]]
+permutations1 [] = [[]]
+permutations1 xs = [ x : p | x <- xs, let ys = delete x xs, p <- permutations1 ys ]
 
 -- Questions got harder to solve so I will leave it like this 
