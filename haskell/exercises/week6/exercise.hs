@@ -21,15 +21,12 @@ cz_colors = [("red", "cerveny"), ("blue", "modry"), ("green", "zeleny")]
 fr_colors :: [(String, String)]
 fr_colors = [("red", "rouge"), ("blue", "bleu"), ("yellow", "jaune")]
 
-lookupInFrench :: String -> [(String, String)]-> Maybe String
-lookupInFrench _ [] = Nothing
-lookupInFrench w (x:list) 
-    | snd x == w = Just (fst x) 
-    | otherwise = lookupInFrench w list 
+swap1 :: (a,b) -> (b,a)
+swap1 (x,y) = (y,x)
 
 fr_to_cz :: String -> Maybe String
 fr_to_cz french = do
-    e <- lookupInFrench french fr_colors
+    e <- lookup french $ map swap1 fr_colors
     c <- lookup e cz_colors
     return (c)
 
