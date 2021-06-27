@@ -82,4 +82,18 @@ permutations1 :: Eq a => [a] -> [[a]]
 permutations1 [] = [[]]
 permutations1 xs = [ x : p | x <- xs, let ys = delete x xs, p <- permutations1 ys ]
 
+permutations_h :: [a] -> [[a]]
+permutations_h xs = 
+    let f (x':xs') = xs' ++ [x']
+        it = (iterate f xs)
+    in 
+        take (length xs) it
+
+permutations2 :: [a] -> [[a]]
+permutations2 [] = [[]]
+permutations2 (x:xs) = 
+    let 
+        temp = map (x:) (permutations2 xs)
+    in concatMap permutations_h temp
+
 -- Questions got harder to solve so I will leave it like this 
